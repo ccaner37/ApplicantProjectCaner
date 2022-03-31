@@ -129,6 +129,9 @@ MonoBehaviour:
   baseSpeed: 5
   snapOptions: 0
   textPosition: 0
+  percentageMultiplier: 100
+  fillBar: {fileID: 0}
+  barText: {fileID: 0}
 --- !u!1 &4329741972386692982
 GameObject:
   m_ObjectHideFlags: 0
