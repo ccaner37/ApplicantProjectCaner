@@ -49,7 +49,7 @@ namespace Challenges._2._Clickable_Object.Scripts
         /// </summary>
         public void SetInteractionMethod(InteractionMethod method)
         {
-            
+            allowedInteractionMethods = method;
         }
         
         
@@ -59,7 +59,13 @@ namespace Challenges._2._Clickable_Object.Scripts
         /// <param name="callback">Function to invoke</param>
         public void RegisterToClickable(OnClickableClicked callback)
         {
+            // callback?.Invoke(this, allowedInteractionMethods);
+            //OnClickableClicked method = null;
+            //method += callback;
+            click += callback;
         }
+
+        OnClickableClicked click;
 
         /// <summary>
         /// Will unregister a previously provided callback
@@ -76,6 +82,10 @@ namespace Challenges._2._Clickable_Object.Scripts
         /// <exception cref="InvalidInteractionMethodException">If tapping is not allowed for this clickable</exception>
         public void RegisterToClickableTap(OnClickableClickedUnspecified onTapCallback) 
         {
+            if (!allowedInteractionMethods.HasFlag(InteractionMethod.Tap))
+                throw new InvalidInteractionMethodException(transform.name, InteractionMethod.Tap);
+
+            click(this, InteractionMethod.Tap);
         }
         
         /// <summary>
@@ -85,6 +95,10 @@ namespace Challenges._2._Clickable_Object.Scripts
         /// <exception cref="InvalidInteractionMethodException">If double tapping is not allowed for this clickable</exception>
         public void RegisterToClickableDoubleTap(OnClickableClickedUnspecified onTapCallback) 
         {
+            if (!allowedInteractionMethods.HasFlag(InteractionMethod.DoubleTap))
+                throw new InvalidInteractionMethodException(transform.name, InteractionMethod.DoubleTap);
+
+            click(this, InteractionMethod.DoubleTap);
         }
         
     }

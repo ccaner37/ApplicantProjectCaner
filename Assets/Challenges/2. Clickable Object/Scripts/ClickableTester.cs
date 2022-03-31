@@ -131,8 +131,8 @@ namespace Challenges._2._Clickable_Object.Scripts
 
         private void SetupClickableObject(ClickableObject clickableObject)
         {
+            _tapTimes.Add(clickableObject, -100);
             clickableObject.RegisterToClickable(ClickableClicked);
-            _tapTimes.Add(clickableObject,-100);
             TestForOnTap(clickableObject);
             TestForOnDoubleTap(clickableObject);
         }
