@@ -21,7 +21,7 @@ namespace Challenges._2._Clickable_Object.Scripts
         {
             Tap=2,
             DoubleTap=4,
-            TapAndHold=8
+            TapAndHold=8,
         }
         
         
@@ -31,6 +31,8 @@ namespace Challenges._2._Clickable_Object.Scripts
         [SerializeField]
         private InteractionMethod allowedInteractionMethods;
 
+
+        private OnClickableClicked ClickInteraction;
 
 
         /// <summary>
@@ -59,13 +61,9 @@ namespace Challenges._2._Clickable_Object.Scripts
         /// <param name="callback">Function to invoke</param>
         public void RegisterToClickable(OnClickableClicked callback)
         {
-            // callback?.Invoke(this, allowedInteractionMethods);
-            //OnClickableClicked method = null;
-            //method += callback;
-            click += callback;
+            ClickInteraction += callback;
         }
 
-        OnClickableClicked click;
 
         /// <summary>
         /// Will unregister a previously provided callback
@@ -73,6 +71,7 @@ namespace Challenges._2._Clickable_Object.Scripts
         /// <param name="callback">Function previously given</param>
         public void UnregisterFromClickable(OnClickableClicked callback)
         {
+            ClickInteraction -= callback;
         }
 
         /// <summary>
@@ -85,7 +84,7 @@ namespace Challenges._2._Clickable_Object.Scripts
             if (!allowedInteractionMethods.HasFlag(InteractionMethod.Tap))
                 throw new InvalidInteractionMethodException(transform.name, InteractionMethod.Tap);
 
-            click(this, InteractionMethod.Tap);
+            ClickInteraction(this, InteractionMethod.Tap);
         }
         
         /// <summary>
@@ -98,8 +97,21 @@ namespace Challenges._2._Clickable_Object.Scripts
             if (!allowedInteractionMethods.HasFlag(InteractionMethod.DoubleTap))
                 throw new InvalidInteractionMethodException(transform.name, InteractionMethod.DoubleTap);
 
-            click(this, InteractionMethod.DoubleTap);
+            ClickInteraction(this, InteractionMethod.DoubleTap);
         }
-        
+
+        public void RegisterToClickableTapAndHold(OnClickableClickedUnspecified onTapCallback)
+        {
+            if (!allowedInteractionMethods.HasFlag(InteractionMethod.TapAndHold))
+            {
+                Debug.LogWarning(new InvalidInteractionMethodException(transform.name, InteractionMethod.TapAndHold).Message);
+                return;
+            }
+
+            // I don't know why but throwing the exception with TapAndHold is crashing Unity.
+            //throw new InvalidInteractionMethodException(transform.name, InteractionMethod.TapAndHold);
+
+            ClickInteraction(this, InteractionMethod.TapAndHold);
+        }
     }
 }
