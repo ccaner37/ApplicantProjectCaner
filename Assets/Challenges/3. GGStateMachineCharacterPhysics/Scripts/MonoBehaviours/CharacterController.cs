@@ -94,14 +94,14 @@ namespace Challenges._3._GGStateMachineCharacterPhysics.Scripts.MonoBehaviours
             //We don't want the machine to leave a state and re-enter it.
             _stateMachine.SetSettings(new StateMachineSettings(true));
             _stateMachine.RegisterUniqueState(new FlowerEarnedState(transform, headTransform));
-            _stateMachine.RegisterUniqueState(new IdleState());
+            _stateMachine.RegisterUniqueState(new IdleState(transform, headTransform));
         }
 
         #region EDIT
         // You should only need to edit in this region, you can add any variables you wish.
-        
 
-       
+
+
         //Add your states under this function
         private void SetupStateMachineStates()
         {
@@ -130,12 +130,60 @@ namespace Challenges._3._GGStateMachineCharacterPhysics.Scripts.MonoBehaviours
         // (A) -> (-1,0)
         public void SetCurrentMovement(Vector2 xzPlaneMovementVector)
         {
-            
+            xzPlaneMovementVector *= characterMovementConfig.MAXSpeed;
+            Vector3 velocity = new Vector3(xzPlaneMovementVector.x, -_gravityVelocity, xzPlaneMovementVector.y);
+            velocity = transform.TransformDirection(velocity);
+            transform.position += velocity * Time.deltaTime;
+
+            if (!_isGrounded)
+            {
+                _gravityVelocity = characterMovementConfig.Gravity;
+            }
+            else
+            {
+                _gravityVelocity = 0;
+            }
+
+            Ray ray = new Ray(transform.TransformPoint(_liftPoint), Vector3.down);
+            RaycastHit hit;
+
+            if (Physics.SphereCast(ray, characterMovementConfig.CharacterRadius*0.8f, out hit, 15f, _rayLayer))
+            {
+                _isGrounded = true;
+                transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, hit.point.y + characterMovementConfig.CharacterHeight / 8f, transform.position.z), characterMovementConfig.Gravity * Time.deltaTime);
+            }
+            else
+            {
+                _isGrounded = false;
+            }
+
+            if (velocity == Vector3.zero)
+            {
+                if (_stateMachine.CheckCurrentState<IdleState>()) return;
+                _stateMachine.SwitchToState<IdleState>();
+            }
+            else
+            {
+                if (_stateMachine.CheckCurrentState<ExampleState>()) return;
+                _stateMachine.SwitchToState<ExampleState>();
+            }
+
         }
-        
+
+        private bool _isGrounded;
+        private float _gravityVelocity;
+        private Vector3 _liftPoint;
+        [SerializeField]
+        private LayerMask _rayLayer;
+
+        private void Awake()
+        {
+            _liftPoint = new Vector3(0, characterMovementConfig.CharacterHeight*0.7f, 0);
+        }
+
         #endregion
-        
-        
+
+
         private void OnDrawGizmosSelected()
         {
             Handles.color = Color.green;
@@ -154,3 +202,46 @@ namespace Challenges._3._GGStateMachineCharacterPhysics.Scripts.MonoBehaviours
         }
     }
 }
+
+
+//if (Physics.SphereCast(ray, characterMovementConfig.CharacterRadius, out hit, 20f, _rayLayer))
+//{
+//    //float currentSlope = Vector3.Angle(hit.normal, Vector3.up);
+//    Collider[] colliders = new Collider[3];
+//    int num = Physics.OverlapSphereNonAlloc(transform.TransformPoint(_groundCheckPoint), characterMovementConfig.CharacterRadius, colliders, _rayLayer);
+//    _isGrounded = false;
+
+//    for (int i = 0; i < num; i++)
+//    {
+//        if (colliders[i].transform == hit.transform)
+//        {
+//            _groundHit = hit;
+//            _isGrounded = true;
+
+//            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, _groundHit.point.y + characterMovementConfig.CharacterHeight / 6f, transform.position.z), characterMovementConfig.Gravity * Time.deltaTime);
+//        }
+
+//        break;
+
+//        if (num <= 1 && hit.distance <= 3.1f)
+//        {
+//            if (colliders[0] != null)
+//            {
+//                Ray ray2 = new Ray(transform.TransformPoint(_liftPoint), Vector3.down);
+//                RaycastHit hit2;
+//                if (Physics.Raycast(ray, out hit2, 3.1f, _rayLayer))
+//                {
+//                    if (hit.transform != colliders[0].transform)
+//                    {
+//                        _isGrounded = false;
+//                        return;
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//else
+//{
+//    _isGrounded = false;
+//}
