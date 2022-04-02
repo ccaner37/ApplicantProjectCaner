@@ -1,5 +1,6 @@
 ﻿using System;
 using Challenges._3._GGStateMachineCharacterPhysics.Scripts.States;
+using Cysharp.Threading.Tasks;
 using GGPlugins.GGStateMachine.Scripts.Abstract;
 using GGPlugins.GGStateMachine.Scripts.Data;
 using GGPlugins.GGStateMachine.Scripts.Installers;
@@ -94,7 +95,6 @@ namespace Challenges._3._GGStateMachineCharacterPhysics.Scripts.MonoBehaviours
             //We don't want the machine to leave a state and re-enter it.
             _stateMachine.SetSettings(new StateMachineSettings(true));
             _stateMachine.RegisterUniqueState(new FlowerEarnedState(transform, headTransform));
-            _stateMachine.RegisterUniqueState(new IdleState(transform, headTransform));
         }
 
         #region EDIT
@@ -106,6 +106,9 @@ namespace Challenges._3._GGStateMachineCharacterPhysics.Scripts.MonoBehaviours
         private void SetupStateMachineStates()
         {
             _stateMachine.RegisterUniqueState(new ExampleState()).RegisterUniqueState(new ExampleParametrizedState(5f));
+
+            _stateMachine.RegisterUniqueState(new IdleState(transform));
+            _stateMachine.RegisterUniqueState(new WalkingState(transform));
         }
         
         //Feel free to remove this
@@ -120,7 +123,32 @@ namespace Challenges._3._GGStateMachineCharacterPhysics.Scripts.MonoBehaviours
             _stateMachine.SwitchToState<ExampleState>();
             // SwitchToState will clear the current queue and add the input as next state (after the currently active one ends)
         }
-        
+
+        private bool _isGrounded;
+
+        private SphereCollider _sphereCollider;
+
+        private float _gravityVelocity;
+
+        private float _heightToRayFactor = 0.4f;
+
+        private float _radiusToRayFactor = 0.4f;
+
+        private Vector3 _rayPoint;
+
+        private Vector3 _collisionVelocity;
+
+        private Vector3 _velocity;
+
+        [SerializeField]
+        private LayerMask _rayLayer;
+
+        private void Awake()
+        {
+            _rayPoint = new Vector3(0, characterMovementConfig.CharacterHeight * _heightToRayFactor, 0);
+            _sphereCollider = transform.GetComponent<SphereCollider>();
+        }
+
         // CharacterInput.cs will call this function every frame in Update. xzPlaneMovementVector specifies the current input.
         // Ex:
         // (W is pressed) -> (0,1) ;
@@ -131,56 +159,77 @@ namespace Challenges._3._GGStateMachineCharacterPhysics.Scripts.MonoBehaviours
         public void SetCurrentMovement(Vector2 xzPlaneMovementVector)
         {
             xzPlaneMovementVector *= characterMovementConfig.MAXSpeed;
-            Vector3 velocity = new Vector3(xzPlaneMovementVector.x, -_gravityVelocity, xzPlaneMovementVector.y);
-            velocity = transform.TransformDirection(velocity);
-            transform.position += velocity * Time.deltaTime;
+            _velocity = new Vector3(xzPlaneMovementVector.x, -_gravityVelocity, xzPlaneMovementVector.y) + _collisionVelocity;
+            transform.position += _velocity * Time.deltaTime;
 
-            if (!_isGrounded)
-            {
-                _gravityVelocity = characterMovementConfig.Gravity;
-            }
-            else
-            {
-                _gravityVelocity = 0;
-            }
+            _collisionVelocity = Vector3.zero;
 
-            Ray ray = new Ray(transform.TransformPoint(_liftPoint), Vector3.down);
+            CheckGround();
+            HandleGravity();
+            HandleCollision();
+            HandleStates();
+        }
+
+        private async UniTaskVoid CheckGround()
+        {
+            Ray ray = new Ray(transform.TransformPoint(_rayPoint), Vector3.down);
             RaycastHit hit;
 
-            if (Physics.SphereCast(ray, characterMovementConfig.CharacterRadius*0.8f, out hit, 15f, _rayLayer))
+            if (Physics.SphereCast(ray, characterMovementConfig.CharacterRadius * _radiusToRayFactor, out hit, 5f, _rayLayer))
             {
                 _isGrounded = true;
-                transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, hit.point.y + characterMovementConfig.CharacterHeight / 8f, transform.position.z), characterMovementConfig.Gravity * Time.deltaTime);
-            }
-            else
-            {
-                _isGrounded = false;
+
+                Vector3 nextPosition = new Vector3(transform.position.x, hit.point.y, transform.position.z);
+                transform.position = Vector3.Lerp(transform.position, nextPosition, characterMovementConfig.Gravity * Time.deltaTime);
+
+                return;
             }
 
-            if (velocity == Vector3.zero)
+            _isGrounded = false;
+        }
+
+        private async UniTaskVoid HandleGravity()
+        {
+            if (_isGrounded)
+                _gravityVelocity = 0;
+            else
+                _gravityVelocity = characterMovementConfig.Gravity;
+        }
+
+        private async UniTaskVoid HandleCollision()
+        {
+            Collider[] overlaps = new Collider[4];
+            int num = Physics.OverlapSphereNonAlloc(transform.TransformPoint(_sphereCollider.center), _sphereCollider.radius, overlaps, _rayLayer);
+            for (int i = 0; i < num; i++)
+            {
+                Transform collidedTransform = overlaps[i].transform;
+                Vector3 direction;
+                float distance;
+
+                if (Physics.ComputePenetration(_sphereCollider, transform.position, transform.rotation, overlaps[i], 
+                    collidedTransform.position, collidedTransform.rotation, out direction, out distance))
+                {
+                    Vector3 penetrationVector = direction * distance;
+                    Vector3 velocityProjected = Vector3.Project(_velocity, -direction);
+                    transform.position += penetrationVector;
+                    _collisionVelocity -= velocityProjected;
+                }
+            }
+        }
+
+        private async UniTaskVoid HandleStates()
+        {
+            if (_velocity == Vector3.zero)
             {
                 if (_stateMachine.CheckCurrentState<IdleState>()) return;
                 _stateMachine.SwitchToState<IdleState>();
             }
             else
             {
-                if (_stateMachine.CheckCurrentState<ExampleState>()) return;
-                _stateMachine.SwitchToState<ExampleState>();
+                if (_stateMachine.CheckCurrentState<WalkingState>()) return;
+                _stateMachine.SwitchToState<WalkingState>();
             }
-
         }
-
-        private bool _isGrounded;
-        private float _gravityVelocity;
-        private Vector3 _liftPoint;
-        [SerializeField]
-        private LayerMask _rayLayer;
-
-        private void Awake()
-        {
-            _liftPoint = new Vector3(0, characterMovementConfig.CharacterHeight*0.7f, 0);
-        }
-
         #endregion
 
 

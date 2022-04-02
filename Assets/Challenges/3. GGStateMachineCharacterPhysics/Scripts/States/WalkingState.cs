@@ -6,17 +6,16 @@ using DG.Tweening;
 
 namespace Challenges._3._GGStateMachineCharacterPhysics.Scripts.States
 {
-    /// <summary>
-    /// You can edit this
-    /// </summary>
-    public class IdleState : GGStateBase
+    public class WalkingState : GGStateBase
     {
         private readonly Transform _characterTransform;
 
-        private const float SCALE_FACTOR = 0.7f;
-        private const float SCALE_TIME = 1.8f;
+        private const float SCALE_FACTOR = 0.3f;
+        private const float SCALE_TIME = 1.1f;
+        private const float ELASTICITY = 1f;
+        private const int VIBRATO = 1;
 
-        public IdleState(Transform characterTransform)
+        public WalkingState(Transform characterTransform)
         {
             _characterTransform = characterTransform;
         }
@@ -27,8 +26,8 @@ namespace Challenges._3._GGStateMachineCharacterPhysics.Scripts.States
 
         public override async UniTask Entry(CancellationToken cancellationToken)
         {
-            _characterTransform.DOScale(_characterTransform.localScale * SCALE_FACTOR, SCALE_TIME)
-                .SetLoops(-1, LoopType.Yoyo);
+            _characterTransform.DOPunchScale(Vector3.one * SCALE_FACTOR, SCALE_TIME, VIBRATO, ELASTICITY)
+                .SetLoops(-1, LoopType.Restart);
         }
 
         public override async UniTask Exit(CancellationToken cancellationToken)
