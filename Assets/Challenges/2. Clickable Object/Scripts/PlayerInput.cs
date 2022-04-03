@@ -83,10 +83,10 @@ public class PlayerInput : MonoBehaviour
                 await UniTask.Yield();
             }
         }
-        catch (Exception ex) when (!(ex is OperationCanceledException)) // when (ex is not OperationCanceledException) at C# 9.0
+        catch (Exception ex) when (!(ex is OperationCanceledException))
         {
             Debug.LogWarning(ex.Message);
-            DetectInput();
+            DetectInput(); // I did this because Exception from ClickableObject.cs was killing my loop. So I tried to fix in this way.
         }
     }
 }

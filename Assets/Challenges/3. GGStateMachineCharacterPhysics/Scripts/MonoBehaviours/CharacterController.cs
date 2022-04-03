@@ -129,15 +129,11 @@ namespace Challenges._3._GGStateMachineCharacterPhysics.Scripts.MonoBehaviours
         private SphereCollider _sphereCollider;
 
         private float _gravityVelocity;
-
         private float _heightToRayFactor = 0.4f;
-
         private float _radiusToRayFactor = 0.4f;
 
         private Vector3 _rayPoint;
-
         private Vector3 _collisionVelocity;
-
         private Vector3 _velocity;
 
         [SerializeField]

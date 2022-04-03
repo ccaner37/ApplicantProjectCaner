@@ -1344,7 +1344,7 @@ PrefabInstance:
       objectReference: {fileID: 554599532}
     - target: {fileID: 2494742570288932964, guid: 3e61bdff43e2a4e019dee83fd473b09a, type: 3}
       propertyPath: baseSpeed
-      value: 1.09
+      value: 0.85
       objectReference: {fileID: 0}
     - target: {fileID: 2494742570288932964, guid: 3e61bdff43e2a4e019dee83fd473b09a, type: 3}
       propertyPath: snapOptions

@@ -109,6 +109,7 @@ namespace Challenges._2._Clickable_Object.Scripts
             }
 
             // I don't know why but throwing the exception with TapAndHold is crashing Unity.
+
             //throw new InvalidInteractionMethodException(transform.name, InteractionMethod.TapAndHold);
 
             ClickInteraction(this, InteractionMethod.TapAndHold);

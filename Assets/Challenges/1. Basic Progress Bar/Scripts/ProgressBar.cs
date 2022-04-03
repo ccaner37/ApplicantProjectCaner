@@ -111,22 +111,6 @@ namespace Challenges._1._Basic_Progress_Bar.Scripts
             barText.text = $"{percentageString}%";
         }
 
-        private void SetBarTextPosition(Vector3 nextScale, bool isSmooth)
-        {
-            if (textPosition != TextPosition.Progress) return;
-
-            Transform barTextTransform = barText.transform;
-            Vector3 nextPosition = Vector3.zero;
-            nextPosition.x = nextScale.x * distanceBetweenBarAndText;
-
-            if (isSmooth)
-            {
-                barTextTransform.DOLocalMove(nextPosition, baseSpeed);
-                return;
-            }
-            barTextTransform.localPosition = nextPosition;
-        }
-
         private void SetFillBarScale(float value, bool isForced)
         {
             Vector3 nextFillBarScale = Vector3.one;
@@ -184,6 +168,22 @@ namespace Challenges._1._Basic_Progress_Bar.Scripts
             DOTween.KillAll();
             fillBar.localScale = nextScale;
             SetBarTextPosition(nextScale, false);
+        }
+
+        private void SetBarTextPosition(Vector3 nextScale, bool isSmooth)
+        {
+            if (textPosition != TextPosition.Progress) return;
+
+            Transform barTextTransform = barText.transform;
+            Vector3 nextPosition = Vector3.zero;
+            nextPosition.x = nextScale.x * distanceBetweenBarAndText;
+
+            if (isSmooth)
+            {
+                barTextTransform.DOLocalMove(nextPosition, baseSpeed);
+                return;
+            }
+            barTextTransform.localPosition = nextPosition;
         }
 
         public void ResetProgressBar() => fillBar.transform.localScale = new Vector3(0, 1, 1);

@@ -1,5 +1,4 @@
 ﻿using Challenges._1._Basic_Progress_Bar.Scripts;
-using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
