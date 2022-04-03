@@ -198,6 +198,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 135815834}
   m_CullTransparentMesh: 0
+--- !u!224 &554599532 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2494742568773747681, guid: 3e61bdff43e2a4e019dee83fd473b09a, type: 3}
+  m_PrefabInstance: {fileID: 2023696317}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &709837547
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,6 +603,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 997150498}
   m_CullTransparentMesh: 0
+--- !u!114 &1474031122 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4628388294056720419, guid: 3e61bdff43e2a4e019dee83fd473b09a, type: 3}
+  m_PrefabInstance: {fileID: 2023696317}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1492395497
 GameObject:
   m_ObjectHideFlags: 0
@@ -769,7 +785,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1608455057}
-  m_ColorGraphics: []
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -903,7 +918,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1821396767}
-  m_ColorGraphics: []
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -1171,7 +1185,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1997237143}
-  m_ColorGraphics: []
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -1319,6 +1332,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2494742570288932963, guid: 3e61bdff43e2a4e019dee83fd473b09a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2494742570288932964, guid: 3e61bdff43e2a4e019dee83fd473b09a, type: 3}
+      propertyPath: barText
+      value: 
+      objectReference: {fileID: 1474031122}
+    - target: {fileID: 2494742570288932964, guid: 3e61bdff43e2a4e019dee83fd473b09a, type: 3}
+      propertyPath: fillBar
+      value: 
+      objectReference: {fileID: 554599532}
+    - target: {fileID: 2494742570288932964, guid: 3e61bdff43e2a4e019dee83fd473b09a, type: 3}
+      propertyPath: baseSpeed
+      value: 1.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 2494742570288932964, guid: 3e61bdff43e2a4e019dee83fd473b09a, type: 3}
+      propertyPath: snapOptions
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2494742570288932964, guid: 3e61bdff43e2a4e019dee83fd473b09a, type: 3}
+      propertyPath: textPosition
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

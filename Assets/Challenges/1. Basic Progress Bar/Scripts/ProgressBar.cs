@@ -52,6 +52,8 @@ namespace Challenges._1._Basic_Progress_Bar.Scripts
         [SerializeField]
         private TextMeshProUGUI barText;
 
+        public Tween fillBarScaleTween;
+
         private void Awake()
         {
             CheckTextOptions();
@@ -115,7 +117,7 @@ namespace Challenges._1._Basic_Progress_Bar.Scripts
 
             Transform barTextTransform = barText.transform;
             Vector3 nextPosition = Vector3.zero;
-            nextPosition.x = nextScale.x * 435;
+            nextPosition.x = nextScale.x * distanceBetweenBarAndText;
 
             if (isSmooth)
             {
@@ -173,7 +175,7 @@ namespace Challenges._1._Basic_Progress_Bar.Scripts
 
         private void ScaleFillBarSmooth(Vector3 nextScale)
         {
-            fillBar.DOScale(nextScale, baseSpeed);
+            fillBarScaleTween = fillBar.DOScale(nextScale, baseSpeed);
             SetBarTextPosition(nextScale, true);
         }
 
@@ -183,5 +185,7 @@ namespace Challenges._1._Basic_Progress_Bar.Scripts
             fillBar.localScale = nextScale;
             SetBarTextPosition(nextScale, false);
         }
+
+        public void ResetProgressBar() => fillBar.transform.localScale = new Vector3(0, 1, 1);
     }
 }

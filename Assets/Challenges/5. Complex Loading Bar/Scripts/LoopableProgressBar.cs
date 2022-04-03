@@ -1,6 +1,8 @@
 ﻿using Challenges._1._Basic_Progress_Bar.Scripts;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Challenges._5._Complex_Loading_Bar.Scripts
 {
@@ -37,16 +39,55 @@ namespace Challenges._5._Complex_Loading_Bar.Scripts
 
         #region Editable Area
 
+        private int[] thresholds;
+        private int currentThreshold = 0;
+        private int nextThreshold = 1;
+
         public void SetThresholds(int[] thresholds)
         {
+            this.thresholds = thresholds;
+            UpdateTexts();
         }
 
         public void ForceValue(int value)
         {
+            Debug.Log($"Exp set to: {value}");
+            float progress = Mathf.InverseLerp(thresholds[currentThreshold], thresholds[nextThreshold], value);
+            basicProgressBar.ForceValue(progress);
+            if (progress >= 1)
+            {
+                OnLevelUp();
+                ForceValue(value);
+            }
         }
 
         public void SetTargetValue(int value, float? speedOverride = null)
         {
+            Debug.Log($"Exp set to: {value}");
+            float progress = Mathf.InverseLerp(thresholds[currentThreshold], thresholds[nextThreshold], value);
+            basicProgressBar.SetTargetValue(progress);
+            if (progress >= 1)
+            {
+                basicProgressBar.fillBarScaleTween.OnComplete(() =>
+                {
+                    OnLevelUp();
+                    SetTargetValue(value);
+                });
+            }
+        }
+
+        private void OnLevelUp()
+        {
+            currentThreshold++;
+            nextThreshold++;
+            UpdateTexts();
+            basicProgressBar.ResetProgressBar();
+        }
+
+        private void UpdateTexts()
+        {
+            previousThresholdText.text = thresholds[currentThreshold].ToString();
+            nextThresholdText.text = thresholds[nextThreshold].ToString();
         }
 
         #endregion
