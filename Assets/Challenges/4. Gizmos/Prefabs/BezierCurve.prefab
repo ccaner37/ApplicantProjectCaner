@@ -81,6 +81,7 @@ MonoBehaviour:
   handle1: {fileID: 3017322105176199833}
   point2: {fileID: 3017322105218607331}
   handle2: {fileID: 3017322103867133893}
+  _gizmoData: {fileID: 11400000, guid: c7addcfe0fd77da498a58c224545ba78, type: 2}
 --- !u!1 &3017322105081432876
 GameObject:
   m_ObjectHideFlags: 0

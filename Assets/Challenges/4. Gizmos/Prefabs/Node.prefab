@@ -45,6 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childrenNodes: []
+  _arrowMesh: {fileID: 8604045607132181640, guid: 01e953b838618ba41afc134324cc1d11, type: 3}
+  _arrowDistance: 0.25
+  _gizmoData: {fileID: 11400000, guid: c7addcfe0fd77da498a58c224545ba78, type: 2}
 --- !u!1 &3687206363602404171
 GameObject:
   m_ObjectHideFlags: 0

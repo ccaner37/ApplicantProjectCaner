@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explodingBarrelData: {fileID: 0}
+  _gizmoData: {fileID: 11400000, guid: c7addcfe0fd77da498a58c224545ba78, type: 2}
 --- !u!1 &8304790720966715059
 GameObject:
   m_ObjectHideFlags: 0

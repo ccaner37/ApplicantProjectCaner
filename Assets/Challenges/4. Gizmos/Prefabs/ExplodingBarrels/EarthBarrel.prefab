@@ -56,6 +56,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8304790720831484402, guid: 6a2102f6cd9d9401daf0a140beb0b4cd, type: 3}
+      propertyPath: _gizmoData
+      value: 
+      objectReference: {fileID: 11400000, guid: c7addcfe0fd77da498a58c224545ba78, type: 2}
+    - target: {fileID: 8304790720831484402, guid: 6a2102f6cd9d9401daf0a140beb0b4cd, type: 3}
       propertyPath: explodingBarrelData
       value: 
       objectReference: {fileID: 11400000, guid: 2f498b65b6a7145d59df3b385ea9f3ee, type: 2}
